@@ -1,26 +1,48 @@
 const { Client, Intents, Collection } = require('discord.js');
-const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const bot = new Client({
+    intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_PRESENCES,
+        Intents.FLAGS.GUILD_INTEGRATIONS,
+        Intents.FLAGS.DIRECT_MESSAGES,
+        Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+        Intents.FLAGS.GUILD_VOICE_STATES,
+        Intents.FLAGS.GUILD_WEBHOOKS,
+        Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+        Intents.FLAGS.GUILD_INVITES,
+        Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.GUILD_BANS,
+        Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
+    ]
+});
 const config = require("./config.json")
-const prefix = config.prefix;
 const token = config.token;
 const fs = require('fs')
-bot.prefix = prefix;
+const Timeout = new Set();
+bot.prefix = config.prefix;
 bot.commands = new Collection();
+bot.slashcommands = new Collection();
 bot.aliases = new Collection();
-bot.categories = fs.readdirSync("./commands/");
 if (config["prefix_command"] === true) {
-    require(`./handlers/command`)(bot);
+    bot.categories = fs.readdirSync("./commands/");
+    require(`./handlers/prefix-command`)(bot);
+}
+if (config["slash_command"] === true) {
+    bot.slashcommands.categories = fs.readdirSync("./slash-commands/");
+    require("./handlers/slash-command")(bot)
 }
 bot.on('ready', () => {
-    if (config["slash_command"] === true) {
-        require("./handlers/slash-command")(bot)
-        require("./events/guild/message2")(bot)
-    }
     require('./events/client/ready')(bot)
-    bot.user.setPresence({ activities: [{ name: `${prefix}help 來獲取幫助` }], status: 'online' });
+    bot.user.setPresence({ activities: [{ name: `${config.prefix}help 來獲取幫助` }], status: 'online' });
 })
+
 bot.on('messageCreate', async message => {
-    require('./events/guild/message')(bot, message)
+    require('./events/guild/prefix-message')(bot, message, Timeout, config)
 })
+
+bot.on('interactionCreate', async interaction => {
+    require("./events/guild/slash-message")(bot, interaction, Timeout, config)
+});
 
 bot.login(token)

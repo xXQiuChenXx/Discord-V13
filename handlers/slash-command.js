@@ -1,21 +1,10 @@
 const { readdirSync } = require("fs");
 module.exports = async function (bot) {
-    let all = []
-    readdirSync("./commands/").map(dir => {
-       readdirSync(`./commands/${dir}/`).map(cmd=>{
-           let pull = require(`../commands/${dir}/${cmd}`)
-           let data = {
-               name: pull.name.toLowerCase(),
-               description: pull.description,
-               options: [{
-                name: 'args',
-                type: 'STRING',
-                description: 'args',
-                required: false,
-            }]
-        }
-        all.push(data)
-       })
+    readdirSync("./slash-commands/").map(dir => {
+        readdirSync(`./slash-commands/${dir}/`).map(cmd => {
+            let pull = require(`../slash-commands/${dir}/${cmd}`)
+            bot.slashcommands.set(pull.name, pull)
+            console.log(`[\x1b[32mSlashCommand\x1b[0m] 成功檢測到指令${pull.name}`)
+        })
     })
-    await bot.application?.commands.set(all);
 }

@@ -7,7 +7,7 @@ module.exports = {
     category: "info",
     description: "幫助列表",
     usage: "[command | alias]",
-    run: async (bot, slashcommand, message, args) => {
+    run: async (bot, message, args, config) => {
         if (args[0]) {
             return getCMD(bot, message, args[0]);
         } else {
