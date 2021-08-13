@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { stripIndents } = require("common-tags");
 const ms = require('ms');
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
     run: async (bot, interaction, config) => {
         let name = interaction.options.get("command")
         if (name) {
-            getCMD(bot, interaction, name);
+            getCMD(bot, interaction, name.value.replace("cmd_", ""));
         } else {
             getAll(bot, interaction);
         }
@@ -51,7 +51,7 @@ function getCMD(bot, interaction, input) {
 
     if (!cmd) {
         embed.setColor("RANDOM").setDescription(info)
-        return interaction.editReply({ embeds: [embed] });
+        return interaction.reply({ embeds: [embed] });
     }
 
     if (cmd.name) info = `**指令名字**: ${cmd.name}`;
