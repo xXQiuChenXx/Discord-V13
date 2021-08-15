@@ -38,7 +38,9 @@ async function Reset(bot, interaction, config) {
         all.forEach(function (element) {
             console.log(`[\x1b[32mSlashCommand\x1b[0m] 成功加載指令 ${element.name}`);
             if (element.name === "help") {
-                element.options[0].choices = Choices
+                if(Choices.length < 25) {
+                    element.options[0].choices = Choices
+                }
             }
         })
         console.log(`[\x1b[32mSlashCommand\x1b[0m] 注冊Slash Command 成功! 設置權限中...`);
