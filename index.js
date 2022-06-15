@@ -17,32 +17,26 @@ const bot = new Client({
     ]
 });
 const config = require("./config.json")
-const token = config.token;
 const fs = require('fs')
 const Timeout = new Set();
-bot.prefix = config.prefix;
+bot.prefix = config.prefix_command === true ? config.prefix : "/";
 bot.commands = new Collection();
-bot.slashcommands = new Collection();
 bot.aliases = new Collection();
-if (config["prefix_command"] === true) {
-    bot.categories = fs.readdirSync("./commands/");
-    require(`./handlers/prefix-command`)(bot);
-}
-if (config["slash_command"] === true) {
-    bot.slashcommands.categories = fs.readdirSync("./slash-commands/");
-    require("./handlers/slash-command")(bot)
-}
+bot.categories = fs.readdirSync("./commands/");
+
+require(`./handlers/commandHandle`)(bot);
+
 bot.on('ready', () => {
-    require('./events/client/ready')(bot)
-    bot.user.setPresence({ activities: [{ name: `${config.prefix}help 來獲取幫助` }], status: 'online' });
+    require('./events/ready')(bot)
+    bot.user.setPresence({ activities: [{ name: `${bot.prefix}help 來獲取幫助` }], status: 'online' });
 })
 
 bot.on('messageCreate', async message => {
-    require('./events/guild/prefix-message')(bot, message, Timeout, config)
+    require('./events/messageCreate')(bot, message, Timeout, config)
 })
 
 bot.on('interactionCreate', async interaction => {
-    require("./events/guild/slash-message")(bot, interaction, Timeout, config)
+    require("./events/interactionCreate")(bot, interaction, Timeout, config)
 });
 
-bot.login(token)
+bot.login(config.token)

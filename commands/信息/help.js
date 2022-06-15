@@ -7,6 +7,13 @@ module.exports = {
     category: "info",
     description: "幫助列表",
     usage: "[command | alias]",
+    options: [
+        {
+            name: 'name',
+            type: 'STRING',
+            description: '指令名字',
+            required: false
+        }],
     run: async (bot, message, args, config) => {
         if (args[0]) {
             return getCMD(bot, message, args[0]);
@@ -51,9 +58,9 @@ function getCMD(bot, message, input) {
     if (cmd.description) info += `\n**描述**: ${cmd.description}`;
     if (cmd.usage) {
         info += `\n**用法**: ${cmd.usage}`;
-        embed.setFooter(`语法: <> = 必须, [] = 可选`);
+        embed.setFooter({ text: `语法: <> = 必须, [] = 可选` });
     }
-    if (cmd.timeout) info += '\n**超时**: ' + ms(cmd.timeout)
+    if (cmd.timeout) info += '\n**冷卻**: ' + ms(cmd.timeout)
 
     embed.setColor("RANDOM").setDescription(info)
 

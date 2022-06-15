@@ -1,6 +1,6 @@
 {
   "name": "discord-v13",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Basic Discord Bot",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
   "homepage": "https://github.com/QiuChen-Developer/Discord-V13#readme",
   "dependencies": {
     "common-tags": "^1.8.0",
-    "discord.js": "^13.1.0",
+    "discord.js": "^13.8.0",
     "ms": "^2.1.3"
   }
 }
