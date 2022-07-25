@@ -24,7 +24,7 @@ module.exports = async (bot, message, Timeout, config) => {
             } else {
                 console.log(`${message.member.user.tag} ` + "執行了指令: " + message.content)
                 command.run(bot, message, args, config);
-                Timeout.add(`${interaction.user.id}_${command.name}`)
+                Timeout.add(`${message.user.id}_${command.name}`)
                 setTimeout(() => {
                     Timeout.delete(`${message.author.id}_${command.name}`)
                 }, command.timeout);
